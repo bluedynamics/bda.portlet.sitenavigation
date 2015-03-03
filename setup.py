@@ -4,7 +4,7 @@ from setuptools import find_packages
 version = '1.0'
 
 name = "bda.portlet.sitenavigation"
-namespace = ['bda', 'portlet', ]
+namespace = ['bda', 'bda.portlet', ]
 baseurl = "http://github.com/bda"
 
 setup(
