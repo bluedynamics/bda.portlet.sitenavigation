@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<portlets>
+  <portlet remove="True"
+      addview="bda.portlet.sitenavigation"
+      title="Site Navigation Portlet"
+      description="Shows a site navigation tree."/>
+</portlets>

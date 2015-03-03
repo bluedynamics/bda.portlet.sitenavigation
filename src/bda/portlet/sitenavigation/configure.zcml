@@ -1,0 +1,36 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
+    xmlns:i18n="http://namespaces.zope.org/i18n"
+    xmlns:plone="http://namespaces.plone.org/plone"
+    i18n_domain="bda.portlet.sitenavigation">
+
+  <i18n:registerTranslations directory="locales" />
+
+  <plone:portlet
+      name       = "bda.portlet.sitenavigation"
+      interface  = ".sitenavigation.ISiteNavigationPortlet"
+      assignment = ".sitenavigation.Assignment"
+      renderer   = ".sitenavigation.Renderer"
+      addview    = ".sitenavigation.AddForm"
+      editview   = ".sitenavigation.EditForm"
+      />
+  <adapter factory=".sitenavigation.SiteNavtreeQueryBuilder" />
+  <adapter factory=".sitenavigation.SiteNavtreeStrategy" />
+
+  <genericsetup:registerProfile
+      name="default"
+      title="bda.portlet.sitenavigation"
+      directory="profiles/default"
+      description='Extension profile for Plone.'
+      provides="Products.GenericSetup.interfaces.EXTENSION"
+      />
+  <genericsetup:registerProfile
+      name="uninstall"
+      title="bda.portlet.sitenavigation UNINSTALLATION"
+      directory="profiles/default"
+      description='Extension profile for Plone.'
+      provides="Products.GenericSetup.interfaces.EXTENSION"
+      />
+
+</configure>

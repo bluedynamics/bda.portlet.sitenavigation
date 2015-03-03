@@ -1,0 +1,46 @@
+<tal:master define="level options/level|python:0;
+                    children options/children | nothing;
+                    bottomLevel options/bottomLevel | nothing;"
+            i18n:domain="plone">
+
+<metal:main define-macro="nav_main">
+<tal:navitem repeat="node children">
+
+<li tal:define="show_children   node/show_children;
+                children        node/children;
+
+                normalizeString nocall: context/plone_utils/normalizeString;
+                item_url        python:node.get('getURL') if not node.get('useRemoteUrl') else node.get('getRemoteUrl');
+                item_type       node/portal_type;
+                is_current      python:node.get('currentItem') or node.get('currentParent');
+                is_dropdown     python:view.include_dropdown and level==1 and children and show_children;
+
+                css_contents    python:'ak-dropdown' if is_dropdown else '';
+                css_active      python:'active' if is_current else '';
+                css_section     string:section-${node/normalized_id};
+                css_type        python:'contenttype-' + normalizeString(item_type);
+                css_state       string:state-${node/normalized_review_state};"
+    tal:attributes="class string:${css_contents} ${css_active} ${css_section} ${css_type} ${css_state}"
+    tal:condition="python:bottomLevel &lt;= 0 or level &lt;= bottomLevel">
+
+  <a tal:attributes="href item_url;
+                     title node/Description|nothing;
+                     class python:'ak-dropdown-toggle disabled' if is_dropdown else None;
+                     data-toggle python:'dropdown' if is_dropdown else None;
+                     role python:'button' if is_dropdown else None;
+                     aria-expanded python:'false' if is_dropdown else None">
+      <span tal:content="node/Title">Selected Item Title</span>
+  </a>
+
+  <tal:children condition="python: len(children) > 0">
+    <ul tal:condition="python: len(children) > 0 and show_children and bottomLevel and level < bottomLevel or True"
+        tal:attributes="class python:'ak-dropdown-menu' if is_dropdown else None;
+                        role python:'menu' if is_dropdown else None">
+        <tal:items tal:replace="structure python:view.recurse(children=children, level=level+1, bottomLevel=bottomLevel)" />
+    </ul>
+  </tal:children>
+
+</li>
+</tal:navitem>
+</metal:main>
+</tal:master>
