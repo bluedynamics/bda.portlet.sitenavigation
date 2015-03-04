@@ -1,7 +1,7 @@
 Changelog
 =========
 
-1.0 (unreleased)
+1.0 (2015-03-04)
 ----------------
 
 - Initial version.
