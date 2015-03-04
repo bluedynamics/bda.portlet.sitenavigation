@@ -1,7 +1,7 @@
 from Acquisition import aq_inner
 from Products.CMFCore.utils import getToolByName
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
-from bda.portlet.sitenavigation import MsgFact as _
+from bda.portlet.sitenavigation import msgFact as _
 from plone.app.layout.navigation.interfaces import INavigationQueryBuilder
 from plone.app.layout.navigation.interfaces import INavtreeStrategy
 from plone.app.layout.navigation.navtree import buildFolderTree
