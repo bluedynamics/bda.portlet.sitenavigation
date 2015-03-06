@@ -1,7 +1,0 @@
-<?xml version="1.0"?>
-<layers>
-  <layer
-      name="bda.portlet.sitenavigation"
-      interface="bda.portlet.sitenavigation.interfaces.IThemeSpecific"
-      />
-</layers>
