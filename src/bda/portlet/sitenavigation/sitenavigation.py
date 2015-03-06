@@ -6,13 +6,13 @@ from plone.app.layout.navigation.interfaces import INavigationQueryBuilder
 from plone.app.layout.navigation.interfaces import INavtreeStrategy
 from plone.app.layout.navigation.navtree import buildFolderTree
 from plone.app.layout.navigation.root import getNavigationRoot
-from plone.app.portlets.portlets import base
+from plone.app.portlets.browser import z3cformhelper
 from plone.app.portlets.portlets import navigation as basenav
 from plone.memoize.instance import memoize
+from z3c.form import field
 from zope import schema
 from zope.component import adapts
 from zope.component import getMultiAdapter
-from zope.formlib import form
 from zope.interface import Interface
 from zope.interface import implements
 from zope.schema.vocabulary import SimpleTerm
@@ -218,28 +218,16 @@ class Renderer(basenav.Renderer):
     recurse = ViewPageTemplateFile('sitenavigation_recurse.pt')
 
 
-class AddForm(base.AddForm):
-    form_fields = form.Fields(ISiteNavigationPortlet)
+class AddForm(z3cformhelper.AddForm):
+    fields = field.Fields(ISiteNavigationPortlet)
     label = _(u"Add Site Navigation Portlet")
     description = _(u"Shows a site navigation tree.")
 
     def create(self, data):
-        return Assignment(
-            name=data.get('name', ""),
-            root=data.get('root', ""),
-            currentFolderOnly=data.get('currentFolderOnly', False),
-            includeTop=data.get('includeTop', False),
-            topLevel=data.get('topLevel', 0),
-            bottomLevel=data.get('bottomLevel', 0),
-            search_base=data.get('search_base', DEFAULT_SEARCH_BASE),
-            expand_tree=data.get('expand_tree', False),
-            include_dropdown=data.get('include_dropdown', False),
-            css_class_main=data.get('css_class_main', ''),
-            show_header=data.get('show_header', True)
-        )
+        return Assignment(**data)
 
 
-class EditForm(base.EditForm):
-    form_fields = form.Fields(ISiteNavigationPortlet)
+class EditForm(z3cformhelper.EditForm):
+    fields = field.Fields(ISiteNavigationPortlet)
     label = _(u"Edit Site Navigation Portlet")
     description = _(u"Shows a site navigation tree.")

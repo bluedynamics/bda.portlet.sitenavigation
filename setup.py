@@ -1,7 +1,7 @@
 from setuptools import setup
 from setuptools import find_packages
 
-version = '1.1.dev0'
+version = '2.0.dev0'
 
 name = "bda.portlet.sitenavigation"
 namespace = ['bda', 'bda.portlet', ]
