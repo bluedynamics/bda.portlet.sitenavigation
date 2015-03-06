@@ -18,6 +18,7 @@
   <adapter factory=".sitenavigation.SiteNavtreeQueryBuilder" />
   <adapter factory=".sitenavigation.SiteNavtreeStrategy" />
 
+  <include package=".upgrades" />
   <genericsetup:registerProfile
       name="default"
       title="bda.portlet.sitenavigation"

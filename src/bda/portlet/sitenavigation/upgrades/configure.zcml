@@ -1,0 +1,14 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:genericsetup="http://namespaces.zope.org/genericsetup">
+
+  <genericsetup:upgradeStep
+      source="1"
+      destination="2"
+      title="Remove Browserlayer"
+      description="Remove the browserlayer, which is not needed anymore."
+      profile="bda.portlet.sitenavigation:default"
+      handler=".remove_browserlayer"
+      />
+
+</configure>
