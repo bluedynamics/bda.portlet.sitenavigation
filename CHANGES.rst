@@ -4,6 +4,10 @@ Changelog
 2.0 (unreleased)
 ----------------
 
+- Make ``search_base`` required, so that at least the first item of the
+  vocabulary is preselected.
+  [thet]
+
 - Change ``css_class_main`` from a TextLine field to a Choice Field, making it
   possible to choose from a vocabulary with nice sounding titles instead of
   having to fill in CSS classes directly. Overrideable via ``overrides.zcml``.
