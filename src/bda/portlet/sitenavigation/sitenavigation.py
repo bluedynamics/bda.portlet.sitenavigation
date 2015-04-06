@@ -57,7 +57,7 @@ class ISiteNavigationPortlet(basenav.INavigationPortlet):
                     "constructed."),
         vocabulary=SEARCH_BASES,
         default=DEFAULT_SEARCH_BASE,
-        required=False
+        required=True
     )
 
     expand_tree = schema.Bool(
@@ -79,12 +79,14 @@ class ISiteNavigationPortlet(basenav.INavigationPortlet):
         required=False
     )
 
-    css_class_main = schema.TextLine(
-        title=_(u"label_css_class_main", default=u"Main CSS classes"),
-        description=_(u"help_css_class_main",
-                      default=u"Space seperated list of wrapper css classes"),
-        default=u"",
-        required=False
+    css_class_main = schema.Choice(
+        title=_(u"label_css_class_main", default=u"Layout"),
+        description=_(
+            u"help_css_class_main",
+            default=u"Sets a different Layout by applying CSS classes."
+        ),
+        vocabulary="bda.portlet.sitenavigation.Layout",
+        required=True
     )
 
     show_header = schema.Bool(

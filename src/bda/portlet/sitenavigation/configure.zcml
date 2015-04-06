@@ -18,6 +18,11 @@
   <adapter factory=".sitenavigation.SiteNavtreeQueryBuilder" />
   <adapter factory=".sitenavigation.SiteNavtreeStrategy" />
 
+  <utility
+      component=".vocabularies.Layout"
+      name="bda.portlet.sitenavigation.Layout"
+      />
+
   <include package=".upgrades" />
   <genericsetup:registerProfile
       name="default"
