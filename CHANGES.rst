@@ -4,6 +4,10 @@ Changelog
 2.0 (unreleased)
 ----------------
 
+- Cache the rendered portlet for an hour with sensible cache keys (portlethash,
+  path, user) for maximum 1 hour.
+  [thet]
+
 - Make ``search_base`` required, so that at least the first item of the
   vocabulary is preselected.
   [thet]
