@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from Acquisition import aq_base
 from Acquisition import aq_inner
 from bda.portlet.sitenavigation import msgFact as _
 from plone.app.layout.navigation.interfaces import INavigationQueryBuilder
@@ -9,16 +8,12 @@ from plone.app.layout.navigation.root import getNavigationRoot
 from plone.app.portlets.browser import z3cformhelper
 from plone.app.portlets.portlets import navigation as basenav
 from plone.memoize import ram
-from plone.portlets.interfaces import IPortletManager
-from plone.portlets.interfaces import IPortletRetriever
-from plone.portlets.utils import hashPortletInfo
 from Products.CMFCore.utils import getToolByName
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 from z3c.form import field
 from zope import schema
 from zope.component import adapter
 from zope.component import getMultiAdapter
-from zope.component import getUtilitiesFor
 from zope.interface import implementer
 from zope.interface import Interface
 from zope.schema.vocabulary import SimpleTerm
@@ -182,18 +177,23 @@ class Assignment(basenav.Assignment):
             del kwargs['show_header']
         super(Assignment, self).__init__(*args, **kwargs)
 
+    @property
+    def portlet_id(self):
+        """Return the portlet assignment's unique object id.
+        """
+        return id(self)
+
 
 def _render_cachekey(method, self):
-    # portlethash = hash(self.data)
-    portlethash = self.portlethash
+    context = aq_inner(self.context)
     # if self.expand_tree and self.search_base is not 'search_base_context':
     #     # cannot cache on root, as long as selected class is set on template
     #     path = get_root_path(self.context, self)
-    path = '/'.join(self.context.getPhysicalPath())
-    portal_membership = getToolByName(self.context, 'portal_membership')
+    path = '/'.join(context.getPhysicalPath())
+    portal_membership = getToolByName(context, 'portal_membership')
     timeout = time.time() // (60 * 60)  # cache for 60 min
     cachekey = (
-        portlethash,
+        self.data.portlet_id,
         path,
         portal_membership.getAuthenticatedMember().id,
         timeout
@@ -240,24 +240,6 @@ class Renderer(basenav.Renderer):
             query=queryBuilder(),
             strategy=strategy
         )
-
-    @property
-    def portlethash(self):
-        portlethash = None
-        assignment = aq_base(self.data)
-
-        # Get the portlet info, to get the portlet hash.
-        # THIS IS CRAZY!
-        context = self.context
-        for name, manager in getUtilitiesFor(IPortletManager, context=context):
-            retriever = getMultiAdapter((context, manager), IPortletRetriever)
-            portlets = retriever.getPortlets()
-            for portlet in portlets:
-                if assignment == portlet['assignment']:
-                    # got you
-                    portlet['manager'] = self.manager.__name__  # not available in portlet info, yet. hurray.  # noqa
-                    portlethash = hashPortletInfo(portlet)
-        return portlethash
 
     @ram.cache(_render_cachekey)
     def render(self):

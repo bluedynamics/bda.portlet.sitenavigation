@@ -8,7 +8,7 @@ Changelog
   instance memoizes.
   [jensens]
 
-- Cache the rendered portlet for an hour with sensible cache keys (portlethash,
+- Cache the rendered portlet for an hour with sensible cache keys (portlet_id,
   path, user) for maximum 1 hour.
   [thet]
 
