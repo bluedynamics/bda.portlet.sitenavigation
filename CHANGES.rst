@@ -4,6 +4,10 @@ Changelog
 2.0 (unreleased)
 ----------------
 
+- Get rid of write-on-reads and their conflicts by reducing the number of 
+  instance memoizes.
+  [jensens]
+
 - Cache the rendered portlet for an hour with sensible cache keys (portlethash,
   path, user) for maximum 1 hour.
   [thet]

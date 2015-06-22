@@ -1,7 +1,6 @@
+# -*- coding: utf-8 -*-
 from Acquisition import aq_base
 from Acquisition import aq_inner
-from Products.CMFCore.utils import getToolByName
-from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 from bda.portlet.sitenavigation import msgFact as _
 from plone.app.layout.navigation.interfaces import INavigationQueryBuilder
 from plone.app.layout.navigation.interfaces import INavtreeStrategy
@@ -10,17 +9,18 @@ from plone.app.layout.navigation.root import getNavigationRoot
 from plone.app.portlets.browser import z3cformhelper
 from plone.app.portlets.portlets import navigation as basenav
 from plone.memoize import ram
-from plone.memoize.instance import memoize
 from plone.portlets.interfaces import IPortletManager
 from plone.portlets.interfaces import IPortletRetriever
 from plone.portlets.utils import hashPortletInfo
+from Products.CMFCore.utils import getToolByName
+from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 from z3c.form import field
 from zope import schema
-from zope.component import adapts
+from zope.component import adapter
 from zope.component import getMultiAdapter
 from zope.component import getUtilitiesFor
+from zope.interface import implementer
 from zope.interface import Interface
-from zope.interface import implements
 from zope.schema.vocabulary import SimpleTerm
 from zope.schema.vocabulary import SimpleVocabulary
 import time
@@ -126,11 +126,11 @@ def get_root_path(context, portlet):
     return root_path
 
 
+@implementer(INavigationQueryBuilder)
+@adapter(Interface, ISiteNavigationPortlet)
 class SiteNavtreeQueryBuilder(basenav.QueryBuilder):
     """Query builder with support for expanded navigation structures.
     """
-    implements(INavigationQueryBuilder)
-    adapts(Interface, ISiteNavigationPortlet)
 
     def __init__(self, context, portlet):
         super(SiteNavtreeQueryBuilder, self).__init__(context, portlet)
@@ -144,11 +144,11 @@ class SiteNavtreeQueryBuilder(basenav.QueryBuilder):
             self.query['path']['query'] = root_path
 
 
+@implementer(INavtreeStrategy)
+@adapter(Interface, ISiteNavigationPortlet)
 class SiteNavtreeStrategy(basenav.NavtreeStrategy):
     """Navtree strategy for Site nav with support of mainportal root.
     """
-    implements(INavtreeStrategy)
-    adapts(Interface, ISiteNavigationPortlet)
 
     def __init__(self, context, portlet):
         super(SiteNavtreeStrategy, self).__init__(context, portlet)
@@ -156,8 +156,8 @@ class SiteNavtreeStrategy(basenav.NavtreeStrategy):
             self.rootPath = get_root_path(context, portlet)
 
 
+@implementer(ISiteNavigationPortlet)
 class Assignment(basenav.Assignment):
-    implements(ISiteNavigationPortlet)
     search_base = DEFAULT_SEARCH_BASE
     expand_tree = False
     include_dropdown = False
@@ -223,7 +223,7 @@ class Renderer(basenav.Renderer):
     def show_header(self):
         return getattr(self.data, 'show_header', True)
 
-    @memoize
+    @ram.cache(_render_cachekey)
     def getNavTree(self, _marker=None):
         if _marker is None:
             _marker = []
@@ -242,7 +242,7 @@ class Renderer(basenav.Renderer):
         )
 
     @property
-    @memoize
+    @ram.cache(_render_cachekey)
     def portlethash(self):
         portlethash = None
         assignment = aq_base(self.data)

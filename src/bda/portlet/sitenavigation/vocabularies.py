@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from bda.portlet.sitenavigation import msgFact as _
 from zope.interface import provider
 from zope.schema.interfaces import IVocabularyFactory
