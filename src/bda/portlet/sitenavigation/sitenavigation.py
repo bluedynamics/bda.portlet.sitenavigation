@@ -242,7 +242,6 @@ class Renderer(basenav.Renderer):
         )
 
     @property
-    @ram.cache(_render_cachekey)
     def portlethash(self):
         portlethash = None
         assignment = aq_base(self.data)
