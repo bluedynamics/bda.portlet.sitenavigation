@@ -4,6 +4,11 @@ Changelog
 2.0 (unreleased)
 ----------------
 
+- Move all memoize-instance cached methods from plone.app.portlet's navigation
+  portlet to this implementation to apply ram caching on it. Avoids some more
+  write-on-reads.
+  [thet]
+
 - Get rid of write-on-reads and their conflicts by reducing the number of 
   instance memoizes.
   [jensens]

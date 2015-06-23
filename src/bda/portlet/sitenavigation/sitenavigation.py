@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 from Acquisition import aq_inner
+from Products.CMFCore.utils import getToolByName
+from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 from bda.portlet.sitenavigation import msgFact as _
 from plone.app.layout.navigation.interfaces import INavigationQueryBuilder
 from plone.app.layout.navigation.interfaces import INavtreeStrategy
@@ -8,14 +10,13 @@ from plone.app.layout.navigation.root import getNavigationRoot
 from plone.app.portlets.browser import z3cformhelper
 from plone.app.portlets.portlets import navigation as basenav
 from plone.memoize import ram
-from Products.CMFCore.utils import getToolByName
-from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 from z3c.form import field
+from zExceptions import NotFound
 from zope import schema
 from zope.component import adapter
 from zope.component import getMultiAdapter
-from zope.interface import implementer
 from zope.interface import Interface
+from zope.interface import implementer
 from zope.schema.vocabulary import SimpleTerm
 from zope.schema.vocabulary import SimpleVocabulary
 import time
@@ -222,6 +223,40 @@ class Renderer(basenav.Renderer):
     @property
     def show_header(self):
         return getattr(self.data, 'show_header', True)
+
+    # CACHED LOOKUPS
+
+    @ram.cache(_render_cachekey)
+    def getNavRootPath(self):
+        currentFolderOnly = self.data.currentFolderOnly or\
+            self.properties.getProperty('currentFolderOnlyInNavtree', False)
+        topLevel = self.data.topLevel or\
+            self.properties.getProperty('topLevel', 0)
+        root = self.data.root
+        if isinstance(root, unicode):
+            root = str(root)
+        return basenav.getRootPath(
+            self.context, currentFolderOnly, topLevel, root
+        )
+
+    @ram.cache(_render_cachekey)
+    def getNavRoot(self, _marker=None):
+        if _marker is None:
+            _marker = []
+        portal = self.urltool.getPortalObject()
+        rootPath = self.getNavRootPath()
+        if rootPath is None:
+            return None
+
+        if rootPath == self.urltool.getPortalPath():
+            return portal
+        else:
+            try:
+                return portal.unrestrictedTraverse(rootPath)
+            except (AttributeError, KeyError, TypeError, NotFound):
+                # TypeError: object is unsubscribtable might be
+                # risen in some cases
+                return portal
 
     @ram.cache(_render_cachekey)
     def getNavTree(self, _marker=None):
