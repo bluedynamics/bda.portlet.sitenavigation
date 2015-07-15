@@ -1,7 +1,7 @@
 Changelog
 =========
 
-2.0 (unreleased)
+2.0 (2015-07-15)
 ----------------
 
 - Move all memoize-instance cached methods from plone.app.portlet's navigation
