@@ -10,6 +10,7 @@ from plone.app.layout.navigation.root import getNavigationRoot
 from plone.app.portlets.browser import z3cformhelper
 from plone.app.portlets.portlets import navigation as basenav
 from plone.memoize import ram
+from plone.memoize.volatile import DontCache
 from z3c.form import field
 from zExceptions import NotFound
 from zope import schema
@@ -101,6 +102,15 @@ class ISiteNavigationPortlet(basenav.INavigationPortlet):
         required=False
     )
 
+    cache_time = schema.TextLine(
+        title=_(u"label_cache_time", default=u"Cache Time (s)"),
+        description=_(
+            u'help_cache_time',
+            default=u"Cache time in seconds. 0 for no caching."
+        ),
+        required=False,
+    )
+
 # 1 .. expand the tree from navigation root
 # 2 .. search from main portal, unexpanded
 # 3 .. search from main portal, with expanded tree
@@ -159,6 +169,7 @@ class Assignment(basenav.Assignment):
     include_dropdown = False
     css_class_main = u''
     show_header = True
+    cache_time = 0
 
     def __init__(self, *args, **kwargs):
         if 'search_base' in kwargs:
@@ -176,6 +187,10 @@ class Assignment(basenav.Assignment):
         if 'show_header' in kwargs:
             self.show_header = kwargs.get('show_header', True)
             del kwargs['show_header']
+        if 'cache_time' in kwargs:
+            self.cache_time = kwargs.get('cache_time', 0)
+            del kwargs['cache_time']
+
         super(Assignment, self).__init__(*args, **kwargs)
 
     @property
@@ -186,13 +201,17 @@ class Assignment(basenav.Assignment):
 
 
 def _render_cachekey(method, self):
+    cache_time = int(self.data.cache_time)
+    if not cache_time:
+        # Don't cache on cache_time = 0 or any other falsy value
+        raise DontCache
     context = aq_inner(self.context)
     # if self.expand_tree and self.search_base is not 'search_base_context':
     #     # cannot cache on root, as long as selected class is set on template
     #     path = get_root_path(self.context, self)
     path = '/'.join(context.getPhysicalPath())
     portal_membership = getToolByName(context, 'portal_membership')
-    timeout = time.time() // (60 * 60)  # cache for 60 min
+    timeout = time.time() // cache_time
     cachekey = (
         self.data.portlet_id,
         path,
