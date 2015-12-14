@@ -1,7 +1,7 @@
 Changelog
 =========
 
-2.1 (unreleased)
+2.1 (2015-12-14)
 ----------------
 
 - Make cache time configurable and set it to 0 seconds. 0 is no caching. There were some issues, where content changes did not reflect in the menus. A good value might be 10 seconds to avoid unnecessary recalculating.
