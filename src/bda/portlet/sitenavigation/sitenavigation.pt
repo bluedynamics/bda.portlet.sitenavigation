@@ -5,33 +5,29 @@
       tal:attributes="class python:view.hasName() and 'portletHeader' or 'portletHeader hiddenStructure'">
     <span class="portletTopLeft"></span>
     <a href="#" class="tile"
-        tal:attributes="href string:${view/heading_link_target}"
-        tal:content="view/title"
+        tal:attributes="href python:view.heading_link_target"
+        tal:content="python:view.title"
         i18n:translate="">Navigation</a>
     <span class="portletTopRight"></span>
   </dt>
   <dd class="portletItem lastItem">
 
-<ul tal:attributes="class string:${view/title} ${view/css_class_main}" tal:define="root view/navigation_root">
-  <li tal:define="is_active view/root_item_class;
-                  cssclass python:'active' if is_active else '';
-                  normalizeString nocall:context/plone_utils/normalizeString;
-                  section_title root/Title;
-                  section python:normalizeString(section_title);
-                  rootIsPortal view/root_is_portal;
-                  root_type root/portal_type;
-                  root_type_class python:'contenttype-' + normalizeString(root_type);
-                  root_class python:rootIsPortal and 'contenttype-plone-site' or root_type_class;"
-      tal:condition="view/include_top"
+<ul tal:attributes="class string:${view/title} ${view/css_class_main}" tal:define="root python:view.navigation_root()">
+  <li tal:define="is_active python:view.root_item_class();
+                  section_title python:root.Title();
+                  section python:view.normalizeString(section_title);
+                  root_is_portal python:view.root_is_portal();
+                  root_class python:'contenttype-plone-site' if root_is_portal else view.css_type(root.portal_type);"
+      tal:condition="python:view.include_top"
       tal:attributes="class string:cssclass nav-section-${section}">
-    <a tal:attributes="href root/absolute_url;
+    <a tal:attributes="href python:root.absolute_url();
                        title root/Description|nothing;
-                       class python:' '.join([root_class, selectedClass]).strip();">
-      <tal:home tal:condition="rootIsPortal" i18n:translate="tabs_home">Home</tal:home>
-      <tal:nothome tal:condition="not:rootIsPortal" tal:replace="root/Title">Root item title</tal:nothome>
+                       class python:' '.join([root_class, 'active' if is_active else '']).strip();">
+      <tal:home tal:condition="python:root_is_portal" i18n:translate="tabs_home">Home</tal:home>
+      <tal:nothome tal:condition="not:root_is_portal" tal:replace="python:root.Title()">Root item title</tal:nothome>
     </a>
   </li>
-  <li tal:replace="structure view/createNavTree">
+  <li tal:replace="structure python:view.createNavTree()">
       SUBTREE
   </li>
 </ul>
