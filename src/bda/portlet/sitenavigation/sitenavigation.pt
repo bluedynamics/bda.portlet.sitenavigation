@@ -17,7 +17,7 @@
                   section_title python:root.Title();
                   section python:view.normalizeString(section_title);
                   root_is_portal python:view.root_is_portal();
-                  root_class python:'contenttype-plone-site' if root_is_portal else view.css_type(root.portal_type);"
+                  root_class python:'contenttype-plone-site' if root_is_portal else view.css_type({'portal_type': root.portal_type});"
       tal:condition="python:view.include_top"
       tal:attributes="class string:cssclass nav-section-${section}">
     <a tal:attributes="href python:root.absolute_url();
