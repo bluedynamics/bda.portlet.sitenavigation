@@ -1,12 +1,12 @@
 <tal:block i18n:domain="plone">
 <dl tal:attributes="class string:${view/title} portlet portletNavigationTree">
   <dt class="portletHeader"
-      tal:condition="view/show_header"
+      tal:condition="python:view.show_header"
       tal:attributes="class python:view.hasName() and 'portletHeader' or 'portletHeader hiddenStructure'">
     <span class="portletTopLeft"></span>
     <a href="#" class="tile"
         tal:attributes="href python:view.heading_link_target"
-        tal:content="view/Title"
+        tal:content="python:view.title()"
         i18n:translate="">Navigation</a>
     <span class="portletTopRight"></span>
   </dt>
