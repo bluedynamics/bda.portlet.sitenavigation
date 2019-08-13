@@ -24,7 +24,7 @@
                        title root/Description|nothing;
                        class python:' '.join([root_class, 'active' if is_active else '']).strip();">
       <tal:home tal:condition="python:root_is_portal" i18n:translate="tabs_home">Home</tal:home>
-      <tal:nothome tal:condition="not:root_is_portal" tal:replace="python:root.Title()">Root item title</tal:nothome>
+      <tal:nothome tal:condition="not:root_is_portal" tal:replace="section_title">Root item title</tal:nothome>
     </a>
   </li>
   <li tal:replace="structure python:view.createNavTree()">

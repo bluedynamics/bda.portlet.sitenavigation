@@ -26,11 +26,11 @@
                      data-toggle python:'dropdown' if is_dropdown else None;
                      role python:'button' if is_dropdown else None;
                      aria-expanded python:'false' if is_dropdown else None">
-      <span tal:content="python:node['Title']">Selected Item Title</span>
+      <span tal:content="node/Title">Selected Item Title</span>
   </a>
 
   <tal:children condition="python: len(children) > 0">
-    <ul tal:condition="python: show_children and bottomLevel and level < bottomLevel or True"
+    <ul tal:condition="python: show_children and bottomLevel and level &lt; bottomLevel or True"
         tal:attributes="class python:'ak-dropdown-menu' if is_dropdown else None;
                         role python:'menu' if is_dropdown else None">
         <tal:items tal:replace="structure python:view.recurse(children=children, level=level+1, bottomLevel=bottomLevel)" />
