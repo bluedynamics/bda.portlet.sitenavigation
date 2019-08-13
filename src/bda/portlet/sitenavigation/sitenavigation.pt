@@ -6,7 +6,7 @@
     <span class="portletTopLeft"></span>
     <a href="#" class="tile"
         tal:attributes="href python:view.heading_link_target"
-        tal:content="python:view.title"
+        tal:content="view/Title"
         i18n:translate="">Navigation</a>
     <span class="portletTopRight"></span>
   </dt>
