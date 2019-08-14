@@ -223,6 +223,19 @@ def _render_cachekey(method, self):
 
 class Renderer(basenav.Renderer):
 
+    def __init__(self, *args, **kwargs):
+        super(Renderer, self).__init__(*args, **kwargs)
+        self.aqi_context = aq_inner(self.context)
+        self.query = getMultiAdapter(
+            (self.aqi_context, self.data),
+            INavigationQueryBuilder
+        )()
+        self.strategy = getMultiAdapter(
+            (self.aqi_context, self.data),
+            INavtreeStrategy,
+        )
+        self.normalizeString = self.aqi_context.plone_utils.normalizeString
+
     @property
     def search_base(self):
         return getattr(self.data, 'search_base', DEFAULT_SEARCH_BASE)
@@ -279,21 +292,15 @@ class Renderer(basenav.Renderer):
 
     @ram.cache(_render_cachekey)
     def getNavTree(self, _marker=None):
-        if _marker is None:
-            _marker = []
-        context = aq_inner(self.context)
-        queryBuilder = getMultiAdapter(
-            (context, self.data),
-            INavigationQueryBuilder
-        )
-        strategy = getMultiAdapter((context, self.data), INavtreeStrategy)
-
         return buildFolderTree(
-            context,
-            obj=context,
-            query=queryBuilder(),
-            strategy=strategy
+            self.aqi_context,
+            obj=self.aqi_context,
+            query=self.query,
+            strategy=self.strategy
         )
+
+    def css_type(self, item):
+        return 'contenttype-' + self.normalizeString(item['portal_type'])
 
     @ram.cache(_render_cachekey)
     def render(self):
